@@ -9,61 +9,91 @@
 ### 用户端（微信 H5）
 - 首页：双列商品卡片展示，含封面、标题、卖点标签、权益星级列表、价格
 - 个人中心：订单列表、查看发货内容、复制群链接
-- 支付流程：下单 → 二维码支付 → 确认支付 → 自动显示发货内容
 - 底部导航栏：店铺首页 / 个人中心
 
 ### 管理后台
 - 仪表盘：商品数、订单数、收入统计、最近订单
-- 商品管理：添加/编辑/删除商品（标题、副标题、价格、封面颜色、标签、权益、自动发货内容）
-- 订单管理：查看全部订单、标记已支付、手动发货
-- 子账号管理：分配不同角色权限（运营/客服/超级管理员）
+- 商品管理：添加/编辑/删除商品
+- 订单管理：查看订单、标记已支付、手动发货
+- 子账号管理：分配不同角色权限
 
 ---
 
-## 快速启动
+## 部署指南（图文版）
 
-### 1. 安装依赖
+### 第一步：在 Railway 上部署后端（免费）
 
-```bash
-cd kaoyan-shop
-npm install
+1. 打开 **https://railway.app**，用 GitHub 账号登录
+2. 点击 **New Project** → **Deploy from GitHub repo**
+3. 授权 GitHub，选择 `kaoyan-shop` 仓库
+4. Railway 会自动识别 Node.js 项目，点击 **Deploy Now**
+5. 等待部署完成（约1-2分钟）
+6. 部署成功后，复制 Railway 给你的域名，格式类似：
+   ```
+   https://kaoyan-shop.up.railway.app
+   ```
+
+### 第二步：启用 GitHub Pages
+
+1. 打开你的 GitHub 仓库：https://github.com/kaede123456/-/settings/pages
+2. **Source** 选择 **Deploy from a branch**
+3. **Branch** 选择 **main**，目录选 **/ (root)**
+4. 点击 **Save**
+5. 等待几分钟后，访问你的 GitHub Pages 地址：
+   ```
+   https://kaede123456.github.io/-
+   ```
+   （具体地址以你的仓库名准）
+
+### 第三步：让网页连接到后端
+
+1. 用任意文本编辑器打开 `public/index.html`
+2. 找到这行（大约在文件开头处）：
+   ```javascript
+   const API_BASE = window.location.port === '3001' ? '' : `http://localhost:${window.location.port}`;
+   ```
+3. 把它改成你的 Railway 域名：
+   ```javascript
+   const API_BASE = 'https://kaoyan-shop.up.railway.app';
+   ```
+4. 用同样方法修改 `public/user.html` 中的同一行
+
+> ⚠️ 如果你的 Railway 域名是 https 开头，API_BASE 也要用 https 开头，否则浏览器会阻止请求。
+
+5. 保存文件，推送到 GitHub：
+   ```bash
+   git add -A
+   git commit -m "fix: 绑定 Railway 后端地址"
+   git push origin main
+   ```
+6. 等待 GitHub Pages 自动更新（约1-2分钟）
+
+### 第四步：访问你的商城 🎉
+
+GitHub Pages 地址就是你的商城地址，分享给任何人点开就能用！
+
+---
+
+## 管理后台
+
+部署完成后访问：**你的GitHub Pages地址/admin.html**
+
+```
+默认账号：admin
+默认密码：admin123
 ```
 
-### 2. 启动服务
+> ⚠️ 正式使用请务必修改默认密码！
 
-**用户端（端口 3000）**
-```bash
-npm start
-# 访问 http://localhost:3000
-```
+---
 
-**管理后台（端口 3001）**
-```bash
-npm run admin
-# 访问 http://localhost:3001/admin.html
-```
+## 默认商品（自动创建）
 
-**开发模式（热重载）**
-```bash
-npm run dev
-```
-
-### 3. 访问页面
-
-| 页面 | 地址 |
-|------|------|
-| 店铺首页 | http://localhost:3000 |
-| 个人中心 | http://localhost:3000/user.html |
-| 管理后台 | http://localhost:3001/admin.html |
-
-### 4. 默认账号
-
-```
-用户名：admin
-密码：admin123
-```
-
-> ⚠️ 正式部署请务必修改默认密码！
+| 商品 | 价格 | 标签 |
+|------|------|------|
+| 27考研网盘云群 | ¥19.90 | 不加密·含押题·精华笔记 |
+| 26考研网盘云群 | ¥9.90 | 冲刺·押题卷·全程更新 |
+| 25考研网盘云群 | ¥9.90 | 历年真题·全程更新 |
 
 ---
 
@@ -72,83 +102,26 @@ npm run dev
 ```
 kaoyan-shop/
 ├── package.json          # 依赖配置
+├── Procfile              # Railway 启动命令
+├── railway.json          # Railway 配置
 ├── server/
-│   ├── index.js          # 用户端 API 服务（商品、订单）
-│   ├── admin.js          # 管理后台 API 服务（含认证）
-│   └── db.js             # SQLite 数据库初始化
+│   ├── index.js          # 用户端 API（商品、订单）
+│   ├── admin.js          # 管理后台 API（含认证）
+│   └── db.js             # SQLite 数据库（自动建表）
 └── public/
     ├── index.html        # 店铺首页
     ├── user.html         # 个人中心
-    ├── admin.html        # 管理后台
-    └── uploads/          # 上传文件目录（自动创建）
+    └── admin.html        # 管理后台
 ```
 
 ---
 
-## 部署到 GitHub
+## 接入真实微信支付
 
-### 方式一：GitHub Pages + 后端服务
-
-1. 将代码推送到 GitHub 仓库
-2. 在 Vercel / Netlify 部署前端静态文件
-3. 将后端部署到 Railway / Render / 自己的服务器
-4. 修改前端 `API_BASE` 地址指向你的后端域名
-
-### 方式二：Railway 一键部署（推荐）
-
-```bash
-# 1. 创建 Railway 账号
-# 2. 连接 GitHub 仓库
-# 3. 设置启动命令：npm start
-# 4. 自动识别 Node.js 环境
-```
-
-### 方式三：Docker 部署
-
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --production
-COPY . .
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-### 方式四：Vercel Serverless Functions
-
-将 `server/` 目录迁移为 Vercel Serverless Functions，前端作为静态文件部署。
-
----
-
-## 接入真实微信支付（沙箱/正式）
-
-当前为**模拟支付流程**，真实接入需：
-
-1. 申请 **微信支付商户号**
-2. 在微信商户平台开通 **Native支付** 或 **H5支付**
-3. 后端调用微信支付统一下单接口，生成真实支付二维码
-4. 替换 `server/index.js` 中的 `/api/orders/create` 接口
-
----
-
-## 自定义配置
-
-### 修改店铺名称
-
-编辑 `public/index.html`，修改 `<title>` 和 `.header-title` 内容。
-
-### 修改默认商品
-
-编辑 `server/db.js` 中的 `initGoods` 部分，修改示例商品数据。
-
-### 修改配色
-
-在 `public/index.html` 和 `public/user.html` 的 CSS 变量中修改 `--orange` / `--red` 等颜色值。
-
-### 修改默认管理员密码
-
-在 `server/db.js` 中修改 `initAdmin.run('admin', 'admin123', 'admin')`，将第二个参数改为你的密码。
+当前为**模拟支付**，真实接入需：
+1. 申请微信支付商户号
+2. 在后端调用微信支付接口
+3. 替换 `server/index.js` 中的支付相关代码
 
 ---
 
@@ -156,15 +129,13 @@ CMD ["npm", "start"]
 
 | 层级 | 技术 |
 |------|------|
-| 前端 | HTML5 + CSS3 + Vanilla JS（零框架，纯原生） |
+| 前端 | HTML5 + CSS3 + Vanilla JS |
 | 后端 | Node.js + Express |
-| 数据库 | SQLite（better-sqlite3） |
-| 认证 | JWT |
-| 文件存储 | 本地文件系统 |
-| 部署 | 支持任意 Node.js 托管平台 |
+| 数据库 | SQLite |
+| 托管 | Railway（后端）+ GitHub Pages（前端） |
 
 ---
 
 ## License
 
-MIT License - 仅供学习与个人使用
+MIT License
