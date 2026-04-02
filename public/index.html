@@ -3,521 +3,204 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta http-equiv="Cache-Control" content="no-cache">
   <title>考研网盘云群</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --orange: #FF6B35;
-      --orange-dark: #E55A25;
-      --orange-light: #FFF3EC;
-      --red: #E74C3C;
-      --green: #27AE60;
-      --bg: #F7F8FC;
-      --card-bg: #FFFFFF;
-      --text-primary: #1A1A2E;
-      --text-secondary: #6B7280;
-      --text-light: #9CA3AF;
-      --border: #EAEAEF;
-      --shadow: 0 2px 12px rgba(0,0,0,0.06);
-      --shadow-hover: 0 8px 24px rgba(255,107,53,0.18);
-      --radius: 16px;
-      --tabbar-h: 64px;
-    }
+    :root { --orange: #FF6B35; --red: #E74C3C; --green: #27AE60; --bg: #F7F8FC; --card: #FFF; --text: #1A1A2E; --sub: #6B7280; --light: #9CA3AF; --border: #EAEAEF; --shadow: 0 2px 12px rgba(0,0,0,0.06); --r: 16px; --tabbar: 64px; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { font-family: 'Noto Sans SC', 'PingFang SC', sans-serif; background: var(--bg); color: var(--text-primary); height: 100%; overflow-x: hidden; }
-    body { padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom)); }
+    html,body { font-family: 'Noto Sans SC', sans-serif; background: var(--bg); color: var(--text); height: 100%; }
+    body { padding-bottom: calc(var(--tabbar) + env(safe-area-inset-bottom)); }
+    a { color: inherit; text-decoration: none; }
 
-    /* === HEADER === */
-    .shop-header {
-      background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
-      padding: 20px 20px 32px;
-      position: relative;
-      overflow: hidden;
-    }
-    .shop-header::before {
-      content: '';
-      position: absolute;
-      top: -40px; right: -40px;
-      width: 200px; height: 200px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 50%;
-    }
-    .shop-header::after {
-      content: '';
-      position: absolute;
-      bottom: -60px; left: -20px;
-      width: 160px; height: 160px;
-      background: rgba(255,255,255,0.06);
-      border-radius: 50%;
-    }
-    .header-inner { position: relative; z-index: 1; }
-    .header-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.2); border-radius: 20px;
-      padding: 4px 12px; font-size: 12px; color: white;
-      margin-bottom: 12px;
-    }
-    .header-badge .dot {
-      width: 6px; height: 6px; background: #FFD700;
-      border-radius: 50%; animation: blink 1.5s infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .header-title {
-      font-size: 26px; font-weight: 900; color: white;
-      letter-spacing: 1px; line-height: 1.2;
-    }
-    .header-subtitle {
-      font-size: 13px; color: rgba(255,255,255,0.8);
-      margin-top: 4px; letter-spacing: 0.5px;
-    }
+    /* Header */
+    .header { background: linear-gradient(135deg, #FF6B35, #FF8C42); padding: 20px; position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    .header::after { content: ''; position: absolute; bottom: -50px; left: -20px; width: 140px; height: 140px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+    .header-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: #fff; margin-bottom: 12px; }
+    .header-badge .dot { width: 6px; height: 6px; background: #FFD700; border-radius: 50%; animation: b 1.5s infinite; }
+    @keyframes b { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .header h1 { font-size: 26px; font-weight: 900; color: #fff; position: relative; }
+    .header p { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 4px; position: relative; }
 
-    /* === NOTICE BAR === */
-    .notice-bar {
-      background: white; margin: -16px 12px 0;
-      border-radius: var(--radius); padding: 12px 14px;
-      display: flex; align-items: center; gap: 10px;
-      box-shadow: var(--shadow); position: relative; z-index: 2;
-    }
-    .notice-icon {
-      width: 28px; height: 28px; background: var(--orange);
-      border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .notice-icon svg { width: 16px; height: 16px; fill: white; }
-    .notice-scroll {
-      flex: 1; overflow: hidden; height: 20px;
-    }
-    .notice-text {
-      font-size: 12px; color: var(--text-secondary);
-      white-space: nowrap; animation: scroll-notice 12s linear infinite;
-    }
-    @keyframes scroll-notice { 0%{transform:translateX(100%)} 100%{transform:translateX(-100%)} }
-    .notice-text span { margin-right: 40px; }
+    /* Notice */
+    .notice { background: #fff; margin: -16px 16px 0; border-radius: var(--r); padding: 12px 14px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow); position: relative; z-index: 2; }
+    .notice-icon { width: 28px; height: 28px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .notice-icon svg { width: 16px; height: 16px; fill: #fff; }
+    .notice-scroll { flex: 1; overflow: hidden; height: 20px; }
+    .notice-text { font-size: 12px; color: var(--sub); white-space: nowrap; animation: s 12s linear infinite; }
+    @keyframes s { 0%{transform:translateX(100%)} 100%{transform:translateX(-100%)} }
 
-    /* === SECTION TITLE === */
-    .section-wrap { padding: 16px 14px 4px; }
-    .section-title {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 16px; font-weight: 700; color: var(--text-primary);
-    }
-    .section-title .accent { color: var(--orange); }
-    .section-title::after {
-      content: ''; flex: 1; height: 1px;
-      background: var(--border); margin-left: 8px;
-    }
+    /* Section */
+    .section { padding: 16px 14px 4px; }
+    .section h2 { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .section h2 span { color: var(--orange); }
 
-    /* === GOODS GRID === */
-    .goods-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      padding: 12px 14px;
-    }
-    .goods-card {
-      background: var(--card-bg); border-radius: var(--radius);
-      overflow: hidden; box-shadow: var(--shadow);
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-    }
-    .goods-card:active { transform: scale(0.97); box-shadow: var(--shadow-hover); }
-    .goods-cover {
-      height: 110px; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      position: relative; overflow: hidden;
-    }
-    .goods-cover-bg {
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, var(--cover-color, #FF6B35) 0%, var(--cover-color2, #FF8C42) 100%);
-    }
-    .goods-cover::before {
-      content: ''; position: absolute;
-      top: -30px; right: -30px;
-      width: 100px; height: 100px;
-      background: rgba(255,255,255,0.12); border-radius: 50%;
-    }
-    .goods-cover::after {
-      content: ''; position: absolute;
-      bottom: -20px; left: -10px;
-      width: 70px; height: 70px;
-      background: rgba(255,255,255,0.08); border-radius: 50%;
-    }
-    .goods-cover-year {
-      position: relative; z-index: 1;
-      font-size: 42px; font-weight: 900; color: white;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      letter-spacing: -1px; line-height: 1;
-    }
-    .goods-cover-label {
-      position: relative; z-index: 1;
-      font-size: 11px; color: rgba(255,255,255,0.9);
-      margin-top: 4px; letter-spacing: 1px;
-    }
-    .goods-body { padding: 10px 12px 12px; }
-    .goods-title {
-      font-size: 14px; font-weight: 700; color: var(--text-primary);
-      line-height: 1.3; margin-bottom: 4px;
-    }
-    .goods-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
-    .goods-tag {
-      font-size: 10px; color: var(--orange); background: var(--orange-light);
-      padding: 2px 6px; border-radius: 4px; font-weight: 500;
-    }
-    .goods-benefits { margin-bottom: 10px; }
-    .goods-benefit {
-      font-size: 11px; color: var(--text-secondary); line-height: 1.6;
-      display: flex; align-items: flex-start; gap: 4px;
-    }
-    .goods-benefit::before { content: '★'; color: var(--orange); flex-shrink: 0; font-size: 10px; margin-top: 1px; }
-    .goods-footer { display: flex; align-items: center; justify-content: space-between; }
-    .goods-price { display: flex; align-items: baseline; gap: 4px; }
-    .goods-price-symbol { font-size: 12px; color: var(--red); font-weight: 700; }
-    .goods-price-value { font-size: 20px; color: var(--red); font-weight: 900; }
-    .goods-original {
-      font-size: 11px; color: var(--text-light);
-      text-decoration: line-through;
-    }
-    .goods-btn {
-      background: linear-gradient(135deg, var(--orange) 0%, #FF8C42 100%);
-      color: white; border: none; border-radius: 20px;
-      padding: 6px 14px; font-size: 12px; font-weight: 700;
-      cursor: pointer; font-family: inherit;
-      box-shadow: 0 4px 12px rgba(255,107,53,0.35);
-      transition: transform 0.15s;
-    }
-    .goods-btn:active { transform: scale(0.93); }
+    /* Grid */
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px 14px; }
+    .card { background: var(--card); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
+    .card:active { transform: scale(0.97); }
+    .cover { height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+    .cover::before { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.12); border-radius: 50%; }
+    .cover::after { content: ''; position: absolute; bottom: -20px; left: -10px; width: 70px; height: 70px; background: rgba(255,255,255,0.08); border-radius: 50%; }
+    .cover-year { font-size: 42px; font-weight: 900; color: #fff; position: relative; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .cover-label { font-size: 11px; color: rgba(255,255,255,0.9); margin-top: 4px; position: relative; letter-spacing: 1px; }
+    .card-body { padding: 10px 12px 12px; }
+    .card-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+    .card-tag { font-size: 10px; color: var(--orange); background: #FFF3EC; padding: 2px 6px; border-radius: 4px; font-weight: 500; }
+    .card-benefits { margin-bottom: 10px; }
+    .card-benefit { font-size: 11px; color: var(--sub); line-height: 1.6; display: flex; align-items: flex-start; gap: 4px; }
+    .card-benefit::before { content: '★'; color: var(--orange); font-size: 10px; margin-top: 1px; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .card-price { display: flex; align-items: baseline; gap: 4px; }
+    .card-price .s { font-size: 12px; color: var(--red); font-weight: 700; }
+    .card-price .v { font-size: 20px; color: var(--red); font-weight: 900; }
+    .card-price del { font-size: 11px; color: var(--light); text-decoration: line-through; }
+    .card-btn { background: linear-gradient(135deg, var(--orange), #FF8C42); color: #fff; border: none; border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(255,107,53,0.35); }
 
-    /* === FOOTER TAB BAR === */
-    .tab-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      height: var(--tabbar-h);
-      background: white;
-      display: flex; align-items: center;
-      padding-bottom: env(safe-area-inset-bottom);
-      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
-      z-index: 100;
-    }
-    .tab-item {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 3px;
-      cursor: pointer; text-decoration: none; color: var(--text-light);
-      transition: color 0.2s;
-    }
-    .tab-item.active { color: var(--red); }
-    .tab-item svg { width: 24px; height: 24px; }
-    .tab-label { font-size: 11px; font-weight: 500; }
+    /* Tab Bar */
+    .tabbar { position: fixed; bottom: 0; left: 0; right: 0; height: var(--tabbar); background: #fff; display: flex; align-items: center; padding-bottom: env(safe-area-inset-bottom); box-shadow: 0 -2px 12px rgba(0,0,0,0.06); z-index: 100; }
+    .tabbar a { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--light); font-size: 11px; font-weight: 500; }
+    .tabbar a.active { color: var(--red); }
+    .tabbar svg { width: 24px; height: 24px; }
 
-    /* === LOADING === */
-    .loading-wrap {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 60px 0;
-    }
-    .spinner {
-      width: 36px; height: 36px;
-      border: 3px solid var(--border);
-      border-top-color: var(--orange);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to{transform:rotate(360deg)} }
-    .loading-text { font-size: 13px; color: var(--text-secondary); margin-top: 12px; }
+    /* Modal */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
+    .modal.show { display: flex; }
+    .modal-sheet { background: #fff; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; padding: 24px 20px calc(24px + env(safe-area-inset-bottom)); animation: u 0.3s ease; }
+    @keyframes u { from{transform:translateY(100%)} to{transform:translateY(0)} }
+    .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+    .modal h3 { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 20px; }
+    .modal-qr { display: flex; justify-content: center; margin-bottom: 16px; }
+    .modal-price { text-align: center; font-size: 28px; font-weight: 900; color: var(--red); margin-bottom: 16px; }
+    .modal-desc { font-size: 13px; color: var(--sub); text-align: center; margin-bottom: 20px; }
+    .modal-btn { width: 100%; background: linear-gradient(135deg, var(--red), #FF6B6B); color: #fff; border: none; border-radius: 30px; padding: 14px; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(231,76,60,0.35); margin-bottom: 8px; }
+    .modal-note { font-size: 11px; color: var(--light); text-align: center; }
 
-    /* === MODAL === */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-      z-index: 200; display: none;
-      align-items: flex-end; justify-content: center;
-    }
-    .modal-overlay.show { display: flex; }
-    .modal-sheet {
-      background: white; border-radius: 20px 20px 0 0;
-      width: 100%; max-width: 480px;
-      padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
-      animation: slide-up 0.3s ease;
-    }
-    @keyframes slide-up { from{transform:translateY(100%)} to{transform:translateY(0)} }
-    .modal-handle {
-      width: 36px; height: 4px; background: var(--border);
-      border-radius: 2px; margin: 0 auto 20px;
-    }
-    .modal-title {
-      font-size: 18px; font-weight: 800; text-align: center;
-      margin-bottom: 20px; color: var(--text-primary);
-    }
-    .modal-qr {
-      display: flex; justify-content: center; margin-bottom: 16px;
-    }
-    .modal-qr img { width: 200px; height: 200px; border-radius: 12px; }
-    .modal-price-row {
-      text-align: center; margin-bottom: 16px;
-    }
-    .modal-price { font-size: 28px; font-weight: 900; color: var(--red); }
-    .modal-desc { font-size: 13px; color: var(--text-secondary); text-align: center; margin-bottom: 20px; }
-    .modal-btn {
-      width: 100%; background: linear-gradient(135deg, var(--red) 0%, #FF6B6B 100%);
-      color: white; border: none; border-radius: 30px;
-      padding: 14px; font-size: 16px; font-weight: 800;
-      cursor: pointer; font-family: inherit;
-      box-shadow: 0 6px 20px rgba(231,76,60,0.35);
-      margin-bottom: 8px;
-    }
-    .modal-btn:active { transform: scale(0.98); }
-    .modal-note {
-      font-size: 11px; color: var(--text-light); text-align: center;
-    }
-    .modal-close {
-      position: absolute; top: 16px; right: 16px;
-      width: 28px; height: 28px; background: var(--bg);
-      border-radius: 50%; border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; color: var(--text-secondary);
-    }
-    .modal-sheet { position: relative; }
-
-    /* === SUCCESS MODAL === */
-    .success-icon {
-      width: 64px; height: 64px; margin: 0 auto 16px;
-      background: #E8F8EE; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-    }
+    /* Success Modal */
+    .success-icon { width: 64px; height: 64px; margin: 0 auto 16px; background: #E8F8EE; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     .success-icon svg { width: 36px; height: 36px; fill: var(--green); }
-    .success-title { font-size: 18px; font-weight: 800; text-align: center; color: var(--text-primary); margin-bottom: 8px; }
-    .success-content {
-      background: var(--bg); border-radius: 12px;
-      padding: 16px; font-size: 13px; color: var(--text-secondary);
-      white-space: pre-wrap; line-height: 1.7;
-      margin: 16px 0; max-height: 200px; overflow-y: auto;
-    }
+    .success-title { font-size: 18px; font-weight: 800; text-align: center; }
+    .success-content { background: var(--bg); border-radius: 12px; padding: 16px; font-size: 13px; color: var(--sub); white-space: pre-wrap; line-height: 1.7; margin: 16px 0; max-height: 200px; overflow-y: auto; }
+    .success-btn { width: 100%; background: linear-gradient(135deg, var(--green), #2ECC71); color: #fff; border: none; border-radius: 30px; padding: 14px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(39,174,96,0.35); }
   </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="shop-header">
-  <div class="shop-header header-inner">
-    <div class="header-badge">
-      <span class="dot"></span>
-      <span>考研资料·全程更新</span>
-    </div>
-    <div class="header-title">考研网盘云群</div>
-    <div class="header-subtitle">高效备考 · 一站备齐 · 全年更新</div>
-  </div>
+<div class="header">
+  <div class="header-badge"><span class="dot"></span>考研资料·全程更新</div>
+  <h1>考研网盘云群</h1>
+  <p>高效备考 · 一站备齐 · 全年更新</p>
 </div>
 
-<!-- NOTICE -->
-<div class="notice-bar">
-  <div class="notice-icon">
-    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-  </div>
-  <div class="notice-scroll">
-    <div class="notice-text" id="noticeText">
-      <span>🎓 27考研资料已全部更新完毕，含冲刺押题！</span>
-      <span>📚 精华笔记持续更新中，学员好评如潮！</span>
-      <span>✅ 所有资料均为高清PDF，支持打印复习！</span>
-      <span>🔔 购课后24h内自动发货，请耐心等待！</span>
-    </div>
-  </div>
+<div class="notice">
+  <div class="notice-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></div>
+  <div class="notice-scroll"><div class="notice-text"><span>🎓 27考研资料已全部更新完毕，含冲刺押题！</span><span>📚 精华笔记持续更新中，学员好评如潮！</span><span>✅ 所有资料均为高清PDF，支持打印复习！</span></div></div>
 </div>
 
-<!-- SECTION -->
-<div class="section-wrap">
-  <div class="section-title">
-    <span class="accent">⬤</span> 热门课程套餐
-  </div>
+<div class="section"><h2><span>⬤</span> 热门课程套餐</h2></div>
+
+<div class="grid" id="goodsGrid"></div>
+
+<div class="tabbar">
+  <a href="index.html" class="active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>店铺首页</a>
+  <a href="user.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>个人中心</a>
 </div>
 
-<!-- GOODS GRID -->
-<div class="goods-grid" id="goodsGrid">
-  <div class="loading-wrap">
-    <div class="spinner"></div>
-    <div class="loading-text">加载中...</div>
-  </div>
-</div>
-
-<!-- TAB BAR -->
-<div class="tab-bar">
-  <a class="tab-item active" href="index.html">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-    <span class="tab-label">店铺首页</span>
-  </a>
-  <a class="tab-item" href="user.html">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-    <span class="tab-label">个人中心</span>
-  </a>
-</div>
-
-<!-- ORDER MODAL -->
-<div class="modal-overlay" id="orderModal">
+<!-- Order Modal -->
+<div class="modal" id="orderModal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title" id="modalTitle">立即购买</div>
-    <div class="modal-qr" id="modalQr"></div>
-    <div class="modal-price-row">
-      <span class="modal-price" id="modalPrice">¥19.90</span>
-    </div>
+    <h3 id="modalTitle">立即购买</h3>
+    <div class="modal-qr"><div style="width:200px;height:200px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;border-radius:12px;">📷<br>扫码支付</div></div>
+    <div class="modal-price" id="modalPrice">¥19.90</div>
     <div class="modal-desc">长按识别上方二维码，微信支付完成后<br>点击下方「已完成支付」按钮领取资料</div>
-    <button class="modal-btn" id="confirmPayBtn">✓ 已完成支付</button>
+    <button class="modal-btn" onclick="confirmPay()">✓ 已完成支付</button>
     <p class="modal-note">支付后自动发货，如未到账请联系客服</p>
-    <input type="hidden" id="currentOrderNo">
+    <input type="hidden" id="currentGoodsId">
   </div>
 </div>
 
-<!-- SUCCESS MODAL -->
-<div class="modal-overlay" id="successModal">
+<!-- Success Modal -->
+<div class="modal" id="successModal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="success-icon">
-      <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-    </div>
+    <div class="success-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
     <div class="success-title">支付成功！</div>
     <div class="success-content" id="deliverContent"></div>
-    <button class="modal-btn" onclick="closeSuccessModal()" style="background: linear-gradient(135deg, #27AE60 0%, #2ECC71 100%); box-shadow: 0 6px 20px rgba(39,174,96,0.35);">复制资料链接</button>
-    <p class="modal-note" id="copyNote">请妥善保存，链接仅在当前设备显示</p>
+    <button class="success-btn" onclick="copyContent()">📋 复制资料链接</button>
   </div>
 </div>
 
 <script>
-const API_BASE = 'https://web-production-d1422.up.railway.app';
-let currentOrderNo = '';
-let currentDeliverContent = '';
+// ===== 纯静态版 - 数据存储在浏览器 localStorage =====
+const GOODS_DATA = [
+  { id: 1, title: '27考研网盘云群', subtitle: '全程更新·初试资料·精华笔记', cover_bg: '#FF6B35', cover_text: '27', price: 19.90, original_price: 39.90, tags: ['不加密','含押题','精华笔记'], benefits: ['★ 27公共课全年（赠部分统考专业课）','★ 初试+复试全程资料','★ 实时更新·不加密','★ 考前终极押题卷'], deliver: '【入群链接】https://pan.baidu.com/s/xxxxx\n\n【群验证码】kaoyan2027\n\n请复制链接到浏览器打开，或联系客服拉群。' },
+  { id: 2, title: '26考研网盘云群', subtitle: '冲刺押题·全程更新', cover_bg: '#E74C3C', cover_text: '26', price: 9.90, original_price: 29.90, tags: ['冲刺','押题卷','全程更新'], benefits: ['★ 26冲刺押题密训','★ 考前最后三套卷','★ 初试资料全覆盖','★ 实时更新不加密'], deliver: '【入群链接】https://pan.baidu.com/s/yyyyy\n\n【群验证码】kaoyan2026' },
+  { id: 3, title: '25考研网盘云群', subtitle: '历年真题·全程更新', cover_bg: '#2ECC71', cover_text: '25', price: 9.90, original_price: 29.90, tags: ['历年真题','全程更新'], benefits: ['★ 历年真题全套','★ 高分学长笔记','★ 初试资料全覆盖','★ 实时更新不加密'], deliver: '【入群链接】https://pan.baidu.com/s/zzzzz\n\n【群验证码】kaoyan2025' }
+];
 
-// 加载商品列表
-async function loadGoods() {
-  try {
-    const res = await fetch(`${API_BASE}/api/goods`);
-    const json = await res.json();
-    const grid = document.getElementById('goodsGrid');
-    if (!json.data || json.data.length === 0) {
-      grid.innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;font-size:14px;">暂无商品</div>';
-      return;
-    }
-    grid.innerHTML = json.data.map((g, i) => {
-      const tagColors = ['#FF6B35','#E74C3C','#2ECC71','#3498DB','#9B59B6'];
-      const coverColor = tagColors[i % tagColors.length];
-      const tagsHtml = (g.tags || []).slice(0, 3).map(t =>
-        `<span class="goods-tag">${t}</span>`
-      ).join('');
-      const benefitsHtml = (g.benefits || []).slice(0, 3).map(b =>
-        `<div class="goods-benefit">${b.replace(/^★\s*/, '')}</div>`
-      ).join('');
-      const originalPrice = g.original_price && g.original_price > g.price
-        ? `<span class="goods-original">¥${g.original_price}</span>` : '';
-      return `
-        <div class="goods-card" onclick="openOrder(${g.id}, '${g.title.replace(/'/g,"\\'")}', ${g.price})">
-          <div class="goods-cover">
-            <div class="goods-cover-bg" style="--cover-color:${coverColor};--cover-color2:${coverColor}dd"></div>
-            <div class="goods-cover-year">${g.cover_text || g.title.slice(0,2)}</div>
-            <div class="goods-cover-label">KAOYAN</div>
-          </div>
-          <div class="goods-body">
-            <div class="goods-title">${g.title}</div>
-            <div class="goods-tags">${tagsHtml}</div>
-            <div class="goods-benefits">${benefitsHtml}</div>
-            <div class="goods-footer">
-              <div class="goods-price">
-                <span class="goods-price-symbol">¥</span>
-                <span class="goods-price-value">${g.price.toFixed(2)}</span>
-                ${originalPrice}
-              </div>
-              <button class="goods-btn">立即购买</button>
-            </div>
+function getOrders() { return JSON.parse(localStorage.getItem('kaoyan_orders') || '[]'); }
+function saveOrders(orders) { localStorage.setItem('kaoyan_orders', JSON.stringify(orders)); }
+
+function renderGoods() {
+  const grid = document.getElementById('goodsGrid');
+  grid.innerHTML = GOODS_DATA.map((g, i) => {
+    const colors = ['#FF6B35','#E74C3C','#2ECC71','#3498DB','#9B59B6'];
+    const color = colors[i % colors.length];
+    return `
+      <div class="card" onclick="openOrder(${g.id})">
+        <div class="cover" style="background:linear-gradient(135deg,${color},${color}dd)">
+          <div class="cover-year">${g.cover_text}</div>
+          <div class="cover-label">KAOYAN</div>
+        </div>
+        <div class="card-body">
+          <div class="card-title">${g.title}</div>
+          <div class="card-tags">${g.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}</div>
+          <div class="card-benefits">${g.benefits.slice(0,3).map(b => `<div class="card-benefit">${b.replace(/^★\s*/,'')}</div>`).join('')}</div>
+          <div class="card-footer">
+            <div class="card-price"><span class="s">¥</span><span class="v">${g.price.toFixed(2)}</span>${g.original_price > g.price ? `<del>¥${g.original_price}</del>` : ''}</div>
+            <button class="card-btn">立即购买</button>
           </div>
         </div>
-      `;
-    }).join('');
-  } catch (e) {
-    document.getElementById('goodsGrid').innerHTML =
-      '<div style="text-align:center;padding:40px;color:#9CA3AF;font-size:14px;">加载失败，请刷新重试</div>';
-  }
+      </div>
+    `;
+  }).join('');
 }
 
-// 创建订单
-async function openOrder(goodsId, title, price) {
-  document.getElementById('modalTitle').textContent = title;
-  document.getElementById('modalPrice').textContent = `¥${price.toFixed(2)}`;
-  document.getElementById('modalQr').innerHTML = '<div class="spinner" style="margin:0 auto"></div>';
+function openOrder(goodsId) {
+  const g = GOODS_DATA.find(x => x.id === goodsId);
+  document.getElementById('modalTitle').textContent = g.title;
+  document.getElementById('modalPrice').textContent = `¥${g.price.toFixed(2)}`;
+  document.getElementById('currentGoodsId').value = goodsId;
   document.getElementById('orderModal').classList.add('show');
-
-  try {
-    // 模拟生成支付二维码（实际接入微信支付需替换）
-    const res = await fetch(`${API_BASE}/api/orders/create`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ goods_id: goodsId, openid: localStorage.getItem('openid') || 'wechat_user_' + Date.now() })
-    });
-    const json = await res.json();
-    if (json.code !== 0) { alert(json.msg); return; }
-    currentOrderNo = json.data.order_no;
-    document.getElementById('currentOrderNo').value = currentOrderNo;
-    document.getElementById('modalQr').innerHTML =
-      `<img src="${json.data.qr_data_url}" alt="支付二维码" style="width:200px;height:200px;border-radius:12px;">`;
-  } catch (e) {
-    document.getElementById('modalQr').innerHTML =
-      '<div style="text-align:center;font-size:13px;color:#9CA3AF;">支付接口连接失败，请稍后重试</div>';
-  }
 }
 
-// 确认支付
-async function confirmPay() {
-  if (!currentOrderNo) return;
-  try {
-    // 模拟支付回调（实际由微信支付平台回调）
-    await fetch(`${API_BASE}/api/orders/${currentOrderNo}/pay-callback`, { method: 'POST' });
-    // 获取发货内容
-    const res = await fetch(`${API_BASE}/api/orders/${currentOrderNo}/deliver`);
-    const json = await res.json();
-    if (json.code === 0) {
-      currentDeliverContent = json.data.content || '感谢购买！请联系客服领取资料。';
-    } else {
-      currentDeliverContent = '感谢购买！请联系客服领取资料。';
-    }
-    closeOrderModal();
-    openSuccessModal();
-  } catch (e) {
-    alert('网络错误，请稍后重试');
-  }
-}
-
-function closeOrderModal() {
+function confirmPay() {
+  const goodsId = parseInt(document.getElementById('currentGoodsId').value);
+  const g = GOODS_DATA.find(x => x.id === goodsId);
+  const order = { order_no: 'KY' + Date.now(), goods_id: goodsId, goods_title: g.title, price: g.price, status: 'paid', deliver: g.deliver, time: new Date().toLocaleString() };
+  const orders = getOrders();
+  orders.unshift(order);
+  saveOrders(orders);
   document.getElementById('orderModal').classList.remove('show');
-}
-
-function openSuccessModal() {
-  document.getElementById('deliverContent').textContent = currentDeliverContent;
+  document.getElementById('deliverContent').textContent = g.deliver;
   document.getElementById('successModal').classList.add('show');
 }
 
-function closeSuccessModal() {
-  const content = currentDeliverContent;
-  if (content) {
-    // 尝试复制链接文本
-    navigator.clipboard.writeText(content).then(() => {
-      const btn = document.querySelector('#successModal .modal-btn');
-      btn.textContent = '✓ 复制成功';
-      setTimeout(() => {
-        btn.textContent = '复制资料链接';
-        document.getElementById('successModal').classList.remove('show');
-      }, 1500);
-    }).catch(() => {
-      // clipboard 失败则弹出内容让用户手动复制
-      prompt('请复制以下内容：', content);
-    });
-  } else {
-    document.getElementById('successModal').classList.remove('show');
-  }
+function copyContent() {
+  const content = document.getElementById('deliverContent').textContent;
+  navigator.clipboard.writeText(content).then(() => {
+    const btn = document.querySelector('.success-btn');
+    btn.textContent = '✓ 已复制';
+    setTimeout(() => btn.textContent = '📋 复制资料链接', 1500);
+  });
 }
 
-document.getElementById('confirmPayBtn').addEventListener('click', confirmPay);
-document.getElementById('orderModal').addEventListener('click', function(e) {
-  if (e.target === this) closeOrderModal();
-});
-document.getElementById('successModal').addEventListener('click', function(e) {
-  if (e.target === this) closeSuccessModal();
-});
+document.getElementById('orderModal').addEventListener('click', e => { if(e.target.id==='orderModal') document.getElementById('orderModal').classList.remove('show'); });
+document.getElementById('successModal').addEventListener('click', e => { if(e.target.id==='successModal') document.getElementById('successModal').classList.remove('show'); });
 
-loadGoods();
+renderGoods();
 </script>
 </body>
 </html>
